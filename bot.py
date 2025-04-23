@@ -7,7 +7,7 @@ from telegram.ext import (
     filters,
 )
 
-BOT_TOKEN = "YOUR_BOT_TOKEN_HERE"  # এখানে আপনার টেলিগ্রাম বট টোকেন বসান
+BOT_TOKEN = "8142140049:AAEzCKEp-leIZAiIppTv8hZBZUY7ZY-ns2Q"  # এখানে আপনার টেলিগ্রাম বট টোকেন বসান
 
 # Start command
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
