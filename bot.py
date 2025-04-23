@@ -16,7 +16,11 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("👋 হ্যালো! একটি ছবি পাঠান, আমি সেটি প্রসেস করবো।")
 
 # Image handler
-async def handle_image(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    photo = update.message.photo[-1]
+    file_id = photo.file_id
+    file = await context.bot.get_file(file_id)
+    file_url = file.file_path
     await update.message.reply_text("📤 ছবি পেয়েছি! এখন প্রসেস করছি...")
 
     # এখানে আপনি আপনার ওয়েবসাইটে ছবি পাঠানোর প্রসেস যুক্ত করবেন
