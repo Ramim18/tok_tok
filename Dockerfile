@@ -20,4 +20,14 @@ RUN CHROME_VERSION=$(google-chrome-stable --version | grep -oP '\d+\.\d+\.\d+') 
     CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION") && \
     curl -Lo /tmp/chromedriver.zip "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip" && \
     unzip /tmp/chromedriver.zip -d /usr/bin/ && chmod +x /usr/bin/chromedriver && \
-    rm /
+    rm /tmp/chromedriver.zip
+
+# কাজের ডিরেক্টরি সেটআপ
+WORKDIR /app
+COPY . .
+
+# প্যাকেজ ইনস্টল
+RUN pip install --no-cache-dir -r requirements.txt
+
+# রান টাইম কমান্ড
+CMD ["python", "main.py"]
