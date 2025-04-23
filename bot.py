@@ -15,6 +15,34 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+import time
+
+# Headless Chrome চালানোর জন্য Chrome Options সেট করা
+options = Options()
+options.headless = True  # Chrome ব্রাউজারটি headless mode এ চলবে
+
+# Chrome ড্রাইভার ইনিশিয়ালাইজ করা
+driver = webdriver.Chrome(options=options)
+
+# নির্দিষ্ট ওয়েবসাইটে যাওয়ার জন্য
+driver.get("https://betterimage.ai/")
+
+# ওয়েব পেজের শিরোনাম প্রিন্ট করা
+print(driver.title)
+
+# কিছু সময় অপেক্ষা করা
+time.sleep(5)  # ৫ সেকেন্ড অপেক্ষা
+
+# পেজে একটি এলিমেন্টে ক্লিক বা ডেটা এক্সট্র্যাক্ট করতে পারেন
+element = driver.find_element(By.TAG_NAME, "h1")
+print("H1 Tag Text: ", element.text)
+
+# ড্রাইভার বন্ধ করা
+driver.quit()
+
 
 # .env ফাইল থেকে টেলিগ্রাম বট টোকেন লোড করা
 load_dotenv()
