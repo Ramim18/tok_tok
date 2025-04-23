@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 
 # .env থেকে Bot Token লোড করা
 load_dotenv()
-BOT_TOKEN = os.getenv("BOT_TOKEN")
+BOT_TOKEN = os.getenv("8142140049:AAEzCKEp-leIZAiIppTv8hZBZUY7ZY-ns2Q")
 
 # BetterImage.ai এর জন্য ছবি আপলোড ফাংশন
 def process_image_with_betterimage(image_path):
@@ -58,11 +58,11 @@ async def handle_image(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("❌ ছবি প্রসেস করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।")
 
 def main():
-    updater = Updater(BOT_TOKEN)
+    updater = Updater(8142140049:AAEzCKEp-leIZAiIppTv8hZBZUY7ZY-ns2Q)
 
     dispatcher = updater.dispatcher
     dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(MessageHandler(Filters.photo, handle_image))
+    dispatcher.add_handler(MessageHandler(filters.photo, handle_image))
 
     updater.start_polling()
     updater.idle()
