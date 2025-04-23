@@ -17,3 +17,8 @@ RUN CHROME_VERSION=$(google-chrome-stable --version | grep -oP '\d+\.\d+\.\d+') 
     unzip /tmp/chromedriver.zip -d /usr/bin/ && \
     chmod +x /usr/bin/chromedriver && \
     rm /tmp/chromedriver.zip
+RUN apt-get update && apt-get install -y wget unzip \
+    && wget https://chromedriver.storage.googleapis.com/112.0.5615.49/chromedriver_linux64.zip \
+    && unzip chromedriver_linux64.zip -d /usr/bin/ \
+    && chmod +x /usr/bin/chromedriver \
+    && rm chromedriver_linux64.zip
