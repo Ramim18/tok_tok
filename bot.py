@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
-load_dotenv()
+import os
+import time
 from telegram import Update
 from telegram.ext import (
     ApplicationBuilder,
@@ -8,14 +9,30 @@ from telegram.ext import (
     ContextTypes,
     filters,
 )
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.action_chains import ActionChains
 
-BOT_TOKEN = "8142140049:AAEzCKEp-leIZAiIppTv8hZBZUY7ZY-ns2Q"  # এখানে আপনার টেলিগ্রাম বট টোকেন বসান
+# .env ফাইল থেকে টেলিগ্রাম বট টোকেন লোড করা
+load_dotenv()
+BOT_TOKEN = os.getenv("BOT_TOKEN")  # .env থেকে টোকেন নিয়েছি
 
-# Start command
+# Selenium WebDriver সেটআপ
+def get_driver():
+    options = Options()
+    options.add_argument("--headless")  # ব্রাউজার হেডলেস মোডে চালানো
+    service = Service("chromedriver")  # চ্রোমড্রাইভার এর পথ দিন
+    driver = webdriver.Chrome(service=service, options=options)
+    return driver
+
+# Start কমান্ড
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("👋 হ্যালো! একটি ছবি পাঠান, আমি সেটি প্রসেস করবো।")
 
-# Image handler
+# ছবি প্রসেসিং ফাংশন
 async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     photo = update.message.photo[-1]
     file_id = photo.file_id
@@ -23,18 +40,35 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     file_url = file.file_path
     await update.message.reply_text("📤 ছবি পেয়েছি! এখন প্রসেস করছি...")
 
-    # এখানে আপনি আপনার ওয়েবসাইটে ছবি পাঠানোর প্রসেস যুক্ত করবেন
-    # উদাহরণ: selenium দিয়ে betterimage.ai-তে আপলোড করা
+    # সেলেনিয়াম দিয়ে BetterImage.ai সাইটে ছবি আপলোড
+    driver = get_driver()
+    driver.get("https://betterimage.ai/")
 
-    await update.message.reply_text("✅ প্রসেস শেষ! আপনার ছবি প্রস্তুত।")
+    # ওয়েবসাইটে ছবি আপলোড করার জন্য Xpath অনুসন্ধান এবং আপলোড করা
+    upload_button = driver.find_element(By.XPATH, '//input[@type="file"]')
+    upload_button.send_keys(file_url)  # এখানে আপনার ছবির URL দিতে হবে
+    time.sleep(10)  # কিছু সময় অপেক্ষা করবো প্রসেস করার জন্য
 
-# Main function
+    # প্রসেসিং সম্পন্ন হলে সাইট থেকে রেজাল্ট পেয়ে সেটি টেলিগ্রামে পাঠানো
+    result_image = driver.find_element(By.XPATH, '//*[@id="result-image"]')  # প্রাসঙ্গিক Xpath চেক করে নিন
+    image_url = result_image.get_attribute('src')
+
+    # প্রসেস শেষ হওয়ার পর ফলাফল পাঠানো
+    await update.message.reply_text(f"✅ প্রসেস শেষ! আপনার ছবি প্রস্তুত। \n{image_url}")
+
+    driver.quit()
+
+# মূল ফাংশন
 def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
+    # Start কমান্ড হ্যান্ডলার
     app.add_handler(CommandHandler("start", start))
-    app.add_handler(MessageHandler(filters.PHOTO, handle_image))
 
+    # ছবি আপলোড এবং প্রসেস করার জন্য হ্যান্ডলার
+    app.add_handler(MessageHandler(filters.PHOTO, handle_photo))
+
+    # বট চলাতে চালু করা
     app.run_polling()
 
 if __name__ == "__main__":
