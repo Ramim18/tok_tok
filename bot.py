@@ -2,7 +2,7 @@ import os
 import tempfile
 from io import BytesIO
 from telegram import Update
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ContextTypes
+from telegram.ext import Updater, CommandHandler, MessageHandler, filters, ContextTypes
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
